@@ -143,11 +143,13 @@ export default class {
         .html("")
       this.counter ++
     }
-
-    bills.forEach(bill => {
+    let billsToShow = filteredBills(bills, getStatus(this.index));
+    console.log('\n');
+    billsToShow.forEach(bill => {
+      console.log('set event to bill => ', bill.id);
       $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
-
+    
     return bills
 
   }
