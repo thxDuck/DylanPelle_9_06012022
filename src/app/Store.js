@@ -4,7 +4,7 @@ const jsonOrThrowIfError = async (response) => {
   return response.json()
 }
 
-class Api {
+export class Api {
   constructor({baseUrl}) {
     this.baseUrl = baseUrl;
   }
@@ -30,7 +30,7 @@ const getHeaders = (headers) => {
   return {...h, ...headers}
 }
 
-class ApiEntity {
+export class ApiEntity {
   constructor({key, api}) {
     this.key = key;
     this.api = api;
@@ -54,7 +54,7 @@ class ApiEntity {
 
 
 
-class Store {
+export class Store {
   constructor() {
     this.api = new Api({baseUrl: 'http://localhost:5678'})
   }

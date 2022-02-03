@@ -19,20 +19,20 @@ export default class NewBill {
 	}
 	handleChangeFile = e => {
 		e.preventDefault();
-		const file = this.document.querySelector(`input[data-testid="file"]`).files[0];
-		const fileFormat = file.name.slice(file.name.lastIndexOf(".") + 1, file.name.length);
-		console.log("fileFormat => ", fileFormat);
+		const file = e.target.files[0];
+		const fileName = (!!file && !!file.name) ? file.name : "NULL.NULL";
+		const fileFormat = fileName.slice(file.name.lastIndexOf(".") + 1, file.name.length);
 		if (ACCEPTED_FORMAT.indexOf(fileFormat) === -1) {
-		  this.document.querySelector(`input[data-testid="file"]`).value = ""
+			this.document.querySelector(`input[data-testid="file"]`).value = ""
+			this.document.querySelector(`#alert-bad-format`).classList.remove("d-none");
 			return false;
 		} else {
-			const filePath = e.target.value.split(/\\/g)
-			const fileName = filePath[filePath.length-1]
+			this.document.querySelector(`#alert-bad-format`).classList.add("d-none");
 			const formData = new FormData()
 			const email = JSON.parse(localStorage.getItem("user")).email
 			formData.append("file", file)
 			formData.append("email", email)
-
+			/* istanbul ignore next */
 			this.store
 				.bills()
 				.create({
@@ -41,8 +41,7 @@ export default class NewBill {
 						noContentType: true
 					}
 				})
-				.then(({fileUrl, key}) => {
-					console.log(fileUrl)
+				.then(({ fileUrl, key }) => {
 					this.billId = key
 					this.fileUrl = fileUrl
 					this.fileName = fileName
@@ -51,7 +50,6 @@ export default class NewBill {
 	}
 	handleSubmit = e => {
 		e.preventDefault()
-		console.log('e.target.querySelector(`input[data-testid="datepicker"]`).value', e.target.querySelector(`input[data-testid="datepicker"]`).value)
 		const email = JSON.parse(localStorage.getItem("user")).email
 		const bill = {
 			email,
@@ -75,7 +73,7 @@ export default class NewBill {
 		if (this.store) {
 			this.store
 				.bills()
-				.update({data: JSON.stringify(bill), selector: this.billId})
+				.update({ data: JSON.stringify(bill), selector: this.billId })
 				.then(() => {
 					this.onNavigate(ROUTES_PATH['Bills'])
 				})

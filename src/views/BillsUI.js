@@ -22,6 +22,8 @@ const row = (bill) => {
 
 const rows = (data) => {
   if (!!data && data.length > 0) {
+    // Ignore this function for jest coverage
+   /* istanbul ignore next */
     data.sort((a, b) => {
       let dateA = new Date(a.date),
         dateB = new Date(b.date)
@@ -36,7 +38,7 @@ const rows = (data) => {
 export default ({ data: bills, loading, error }) => {
 
   const modal = () => (`
-    <div class="modal fade" id="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal fade" id="modaleFile"  data-testid="modaleFile" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">

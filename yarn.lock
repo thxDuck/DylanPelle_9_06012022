@@ -3285,7 +3285,7 @@
     "merge-stream" "^2.0.0"
     "supports-color" "^7.0.0"
 
-"jest@^26.1.0", "jest@19.x - 26.x":
+"jest@19.x - 26.x":
   "integrity" "sha512-LIti8jppw5BcQvmNJe4w2g1N/3V68HUfAv9zDVm7v+VAtQulGhH0LnmmiVkbNE4M4I43Bj2fXPiBGKt26k9tHw=="
   "resolved" "https://registry.npmjs.org/jest/-/jest-26.1.0.tgz"
   "version" "26.1.0"
