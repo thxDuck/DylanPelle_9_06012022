@@ -12,10 +12,27 @@ export default class NewBill {
 		formNewBill.addEventListener("submit", this.handleSubmit)
 		const file = this.document.querySelector(`input[data-testid="file"]`)
 		file.addEventListener("change", this.handleChangeFile)
+		let inputs = document.querySelectorAll(`input, select`);
+		if (inputs) inputs.forEach(input => {
+			input.addEventListener('input', (e) => this.handleInputsRequired(e))
+		})
 		this.fileUrl = null
 		this.fileName = null
 		this.billId = null
 		new Logout({ document, localStorage, onNavigate })
+	}
+	handleInputsRequired = (e) => {
+		const requiredInputs = document.querySelectorAll(`.require`)
+		let inputFile = document.querySelector(`input[type="file"]`);
+		for (let i = 0; i < requiredInputs.length; i++) {
+			const inputValue = requiredInputs[i].value;
+			if (!inputValue) {
+				inputFile.setAttribute('disabled', 'disabled')
+				return false;
+			}
+		}
+		inputFile.removeAttribute('disabled');
+		return true;
 	}
 	handleChangeFile = e => {
 		e.preventDefault();

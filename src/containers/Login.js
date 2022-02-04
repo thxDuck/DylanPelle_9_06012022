@@ -24,7 +24,6 @@ export default class Login {
       status: "connected"
     }
     this.localStorage.setItem("user", JSON.stringify(user))
-    console.log('test to connect Employee with user => ', user);
     this.login(user)
       .catch(
         (err) => this.createUser(user)
@@ -46,7 +45,6 @@ export default class Login {
       password: e.target.querySelector(`input[data-testid="admin-password-input"]`).value,
       status: "connected"
     }
-    console.log('test to connect admin with user => ', user);
     this.localStorage.setItem("user", JSON.stringify(user))
     this.login(user)
       .catch(

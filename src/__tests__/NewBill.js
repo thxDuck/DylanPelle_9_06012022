@@ -32,11 +32,23 @@ describe("Given I am connected as an employee", () => {
       file: screen.getByTestId('file'),
     }
 
+
+    // inputs = {
+    //   select: document.querySelector('expense-type'),
+    //   name: document.querySelector('[data-testid="expense-name'),
+    //   datepicker: document.querySelector('[data-testid="datepicker'),
+    //   amount: document.querySelector('[data-testid="amount'),
+    //   vat: document.querySelector('[data-testid="vat'),
+    //   pct: document.querySelector('[data-testid="pct'),
+    //   commentary: document.querySelector('[data-testid="commentary'),
+    //   file: document.querySelector('[data-testid="file'),
+    // }
+
     test("Then mail icon in vertical layout should be highlighted", () => {
       const icon = screen.getByTestId('icon-mail');
       expect(icon.classList.contains("active-icon"))
     })
-    test("Then inputs shold be empty", () => {
+    test("Then inputs should be empty", () => {
       for (const input in inputs) {
         if (Object.hasOwnProperty.call(inputs, input)) {
           if (inputs[input].tagName !== "SELECT") {
@@ -48,6 +60,81 @@ describe("Given I am connected as an employee", () => {
     });
 
     describe("When I fill form", () => {
+      test("Then until all required inputs were not filled", () => {
+        const html = NewBillUI();
+        document.body.innerHTML = html;
+
+        let inputs = {
+          select: screen.getByTestId('expense-type'),
+          name: screen.getByTestId('expense-name'),
+          datepicker: screen.getByTestId('datepicker'),
+          amount: screen.getByTestId('amount'),
+          vat: screen.getByTestId('vat'),
+          pct: screen.getByTestId('pct'),
+          commentary: screen.getByTestId('commentary'),
+          file: screen.getByTestId('file'),
+        }
+        inputs.datepicker.value = "2022-01-25";
+        inputs.amount.value = 100;
+        inputs.vat.value = 80;
+        inputs.pct.value = 20;
+        inputs.commentary.value = "Test de Julien";
+        inputs.name.value = "";
+        inputs.select.value = "Transports";
+
+        const NewBillPage = new NewBill({ document, onNavigate, store: null, localStorage: window.localStorage });
+
+        const handleInputsMok = jest.fn((e) => NewBillPage.handleInputsRequired(e));
+        let requiredInputs = document.querySelectorAll(`input, select`);
+        for (let i = 0; i < requiredInputs.length; i++) {
+          const input = requiredInputs[i];
+          input.addEventListener("input", handleInputsMok);
+        }
+
+        fireEvent.input(inputs.select)
+
+        expect(handleInputsMok).toHaveBeenCalled();
+        expect(inputs.file.hasAttribute('disabled')).toBeTruthy();
+      });
+      test("Then all required inputs are filled", () => {
+        const html = NewBillUI();
+        document.body.innerHTML = html;
+
+        let inputs = {
+          select: screen.getByTestId('expense-type'),
+          name: screen.getByTestId('expense-name'),
+          datepicker: screen.getByTestId('datepicker'),
+          amount: screen.getByTestId('amount'),
+          vat: screen.getByTestId('vat'),
+          pct: screen.getByTestId('pct'),
+          commentary: screen.getByTestId('commentary'),
+          file: screen.getByTestId('file'),
+        }
+        inputs.datepicker.value = "2022-01-25";
+        inputs.amount.value = 100;
+        inputs.vat.value = 80;
+        inputs.pct.value = 20;
+        inputs.commentary.value = "Test de Julien";
+        inputs.name.value = "Test de Julien";
+        inputs.select.value = "Transports";
+
+        const NewBillPage = new NewBill({ document, onNavigate, store: null, localStorage: window.localStorage });
+
+        const handleInputsMok = jest.fn((e) => NewBillPage.handleInputsRequired(e));
+        let requiredInputs = document.querySelectorAll(`input, select`);
+        for (let i = 0; i < requiredInputs.length; i++) {
+          const input = requiredInputs[i];
+          input.addEventListener("input", handleInputsMok);
+        }
+
+        fireEvent.input(inputs.select)
+
+        expect(handleInputsMok).toHaveBeenCalled();
+        expect(inputs.file.hasAttribute('disabled')).toBeFalsy();
+      });
+
+
+
       test("Then submit an image file with good format", () => {
         let RealStore = Store;
         console.error = jest.fn();

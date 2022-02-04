@@ -30,6 +30,34 @@ describe("Given I am connected as an employee", () => {
       const icon = screen.getByTestId('icon-window');
       expect(icon.classList.contains("active-icon"));
     });
+    test("Then bills should be ordered from earliest to latest", () => {
+      const dates = screen.getAllByTestId('formatted-date').map(e => e.innerHTML);
+      const antiChrono = (a, b) => ((a < b) ? 1 : -1);
+      const datesSorted = [...dates].sort(antiChrono);
+      expect(dates).toEqual(datesSorted);
+    });
+    test("Then don't display null bills", () => {
+      bills.push({
+        "id": "47qAXb6fIm2zOKkLzMro",
+        "vat": null,
+        "fileUrl": "https://test.storage.tld/v0/b/billable-677b6.a…f-1.jpg?alt=media&token=c1640e12-a24b-4b11-ae52-529112e9602a",
+        "status": null,
+        "type": null,
+        "commentary": null,
+        "name": null,
+        "fileName": "preview-facture-free-201801-pdf-1.jpg",
+        "date": null,
+        "amount": null,
+        "commentAdmin": null,
+        "email": null,
+        "pct": null,
+      },)
+      const html = BillsUI({ data: bills })
+      document.body.innerHTML = html
+      const displayedBillsDates = screen.getAllByTestId('formatted-date');
+
+      expect(displayedBillsDates.length).toBe(bills.length -1);
+    });
     test("Then click on eye icon", () => {
       const BillsPage = new Bills({
         document, onNavigate, store: null, bills, localStorage: window.localStorage
@@ -41,8 +69,10 @@ describe("Given I am connected as an employee", () => {
       for (let i = 0; i < iconEyes.length; i++) {
         const icon = iconEyes[i];
         const handleClickIconEye = jest.fn((e) => BillsPage.handleClickIconEye(icon));
+        
         icon.addEventListener("click", handleClickIconEye);
         userEvent.click(icon);
+
         expect(iconEyes).toBeTruthy();
         expect(handleClickIconEye).toHaveBeenCalled();
       }
@@ -61,12 +91,7 @@ describe("Given I am connected as an employee", () => {
       expect(newBillBtn).toBeTruthy();
       expect(handleNewBill).toHaveBeenCalled();
     });
-    test("Then bills should be ordered from earliest to latest", () => {
-      const dates = screen.getAllByTestId('formatted-date').map(e => e.innerHTML);
-      const antiChrono = (a, b) => ((a < b) ? 1 : -1);
-      const datesSorted = [...dates].sort(antiChrono);
-      expect(dates).toEqual(datesSorted);
-    });
+
 
     // test d'intégration GET
     test("fetches bills from mock API GET", async () => {
