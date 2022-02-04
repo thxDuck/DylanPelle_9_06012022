@@ -1,6 +1,8 @@
 {
   "scripts": {
-    "test": "jest --coverage --noStackTrace --silent"
+    "jest": "jest",
+    "test": "jest --coverage --noStackTrace --silent",
+    "test-v": "jest --coverage --noStackTrace --silent=false"
   },
   "jest": {
     "verbose": false,
@@ -29,7 +31,6 @@
     "@testing-library/jest-dom": "^5.11.0",
     "@testing-library/user-event": "^12.0.11",
     "babel-jest": "^26.1.0",
-    "jest": "^26.1.0",
     "jest-html-reporter": "^3.1.3"
   }
 }
