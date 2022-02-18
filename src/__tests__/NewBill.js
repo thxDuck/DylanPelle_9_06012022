@@ -1,9 +1,17 @@
-import { fireEvent, screen } from "@testing-library/dom"
+/**
+ * @jest-environment jsdom
+ */
+
+import { fireEvent, screen, waitFor } from "@testing-library/dom"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import { ROUTES } from "../constants/routes.js"
 import { localStorageMock } from "../__mocks__/localStorage.js"
-import Store from "../app/Store"
+import mockStore from "../__mocks__/store"
+import { bills } from "../fixtures/bills"
+import router from "../app/Router"
+
+jest.mock("../app/store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
@@ -31,18 +39,6 @@ describe("Given I am connected as an employee", () => {
       commentary: screen.getByTestId('commentary'),
       file: screen.getByTestId('file'),
     }
-
-
-    // inputs = {
-    //   select: document.querySelector('expense-type'),
-    //   name: document.querySelector('[data-testid="expense-name'),
-    //   datepicker: document.querySelector('[data-testid="datepicker'),
-    //   amount: document.querySelector('[data-testid="amount'),
-    //   vat: document.querySelector('[data-testid="vat'),
-    //   pct: document.querySelector('[data-testid="pct'),
-    //   commentary: document.querySelector('[data-testid="commentary'),
-    //   file: document.querySelector('[data-testid="file'),
-    // }
 
     test("Then mail icon in vertical layout should be highlighted", () => {
       const icon = screen.getByTestId('icon-mail');
@@ -135,17 +131,17 @@ describe("Given I am connected as an employee", () => {
 
 
 
-      test("Then submit an image file with good format", () => {
-        let RealStore = Store;
+      test("Then submit an image file with good format", async () => {
         console.error = jest.fn();
-        const NewBillPage = new NewBill({ document, onNavigate, store: RealStore, localStorage: window.localStorage });
+        const NewBillPage = new NewBill({ document, onNavigate, store: mockStore, localStorage: window.localStorage });
 
         let fileInput = inputs.file;
         let file = new File(['(⌐□_□)'], 'johnDoe.png', { type: 'image/png' });
 
+        const createBill = jest.spyOn(NewBillPage, "createBill");
+
         const handleChangeFileMok = jest.fn((e) => NewBillPage.handleChangeFile(e));
         fileInput.addEventListener("change", handleChangeFileMok);
-
         fireEvent.change(fileInput, {
           target: {
             files: [file]
@@ -154,32 +150,39 @@ describe("Given I am connected as an employee", () => {
 
         expect(fileInput).toBeTruthy();
         expect(handleChangeFileMok).toHaveBeenCalled();
+        expect(createBill).toHaveBeenCalled();
+        
+        let successMsg = screen.getByTestId('success-file-msg');
+        expect(!successMsg.classList.contains("d-none")).toBeTruthy();
       });
 
       test("Then submit an image file with bad format", () => {
-        const NewBillPage = new NewBill({ document, onNavigate, store: null, localStorage: window.localStorage })
+        console.error = jest.fn();
+        const NewBillPage = new NewBill({ document, onNavigate, store: mockStore, localStorage: window.localStorage });
 
         let fileInput = inputs.file;
-        let file = new File(['(⌐□_□)'], 'johnDoe.webp', { type: 'image/webp' })
+        let file = new File(['(⌐□_□)'], 'johnDoe.webp', { type: 'image/webp' });
 
-        const handleChangeFileMok = jest.fn((e) => NewBillPage.handleChangeFile(e))
-        fileInput.addEventListener("change", handleChangeFileMok)
+        const createBill = jest.spyOn(NewBillPage, "createBill");
+        const handleChangeFileMok = jest.fn((e) => NewBillPage.handleChangeFile(e));
+        fileInput.addEventListener("change", handleChangeFileMok);
         fireEvent.change(fileInput, {
           target: {
             files: [file]
           }
         });
 
-        expect(!!fileInput.value).toBeFalsy();
-        expect(screen.getAllByText("Erreur ! Merci d'entrer un fichier image au format .jpg, .jpeg, .png")).toBeTruthy();
+        expect(fileInput.value).toBeFalsy();
         expect(handleChangeFileMok).toHaveBeenCalled();
+        expect(createBill).not.toHaveBeenCalled();
+        let errorMsg = screen.getByTestId('error-file-msg');
+        expect(!errorMsg.classList.contains("d-none")).toBeTruthy();
       });
 
       test("Then I fill all required inputs", () => {
-        let RealStore = Store;
         console.error = jest.fn();
 
-        const NewBillPage = new NewBill({ document, onNavigate, store: RealStore, localStorage: window.localStorage });
+        const NewBillPage = new NewBill({ document, onNavigate, store: mockStore, localStorage: window.localStorage });
         let form = screen.getByTestId('form-new-bill');
         let submitButton = screen.getByTestId('btn-submit-form');
 

@@ -6,8 +6,8 @@ import { formatDate, formatStatus } from '../app/format.js'
 import Actions from './Actions.js'
 
 const row = (bill) => {
-  if (!!bill.type || !!bill.name || !!bill.date) {
-    return (`
+  if (!bill.type || !bill.name || !bill.date) return;
+  return (`
     <tr>
       <td>${bill.type}</td>
       <td>${bill.name}</td>
@@ -19,21 +19,15 @@ const row = (bill) => {
       </td>
     </tr>
     `)
-  }
 }
 
 const rows = (data) => {
-  if (!!data && data.length > 0) {
-    // Ignore this function for jest coverage
-    /* istanbul ignore next */
-    data.sort((a, b) => {
-      let dateA = new Date(a.date),
-        dateB = new Date(b.date)
-      if (dateA > dateB) return -1
-      if (dateA < dateB) return 1
-      return 0
-    })
-  }
+  if (!data || !data.length) return;
+  /* istanbul ignore next */
+  data.sort((a, b) => {
+    let dateA = new Date(a.date), dateB = new Date(b.date)
+    return (dateA < dateB) ? 1 : -1;
+  });
   return data && data.length ? data.map(bill => row(bill)).join('') : ''
 }
 

@@ -42,28 +42,32 @@ export default class NewBill {
 		if (ACCEPTED_FORMAT.indexOf(fileFormat) === -1) {
 			this.document.querySelector(`input[data-testid="file"]`).value = ""
 			this.document.querySelector(`#alert-bad-format`).classList.remove("d-none");
+			this.document.querySelector(`#alert-good-format`).classList.add("d-none");
 			return false;
 		} else {
 			this.document.querySelector(`#alert-bad-format`).classList.add("d-none");
+			this.document.querySelector(`#alert-good-format`).classList.remove("d-none");
 			const formData = new FormData()
 			const email = JSON.parse(localStorage.getItem("user")).email
 			formData.append("file", file)
 			formData.append("email", email)
-			/* istanbul ignore next */
-			this.store
-				.bills()
-				.create({
-					data: formData,
-					headers: {
-						noContentType: true
-					}
-				})
-				.then(({ fileUrl, key }) => {
-					this.billId = key
-					this.fileUrl = fileUrl
-					this.fileName = fileName
-				}).catch(error => console.error(error))
+			this.createBill(formData, fileName);
 		}
+	}
+	createBill = (formData, fileName) => {
+		this.store
+			.bills()
+			.create({
+				data: formData,
+				headers: {
+					noContentType: true
+				}
+			})
+			.then(({ fileUrl, key }) => {
+				this.billId = key
+				this.fileUrl = fileUrl
+				this.fileName = fileName
+			}).catch(error => console.error(error))
 	}
 	handleSubmit = e => {
 		e.preventDefault()
