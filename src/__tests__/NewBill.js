@@ -151,7 +151,7 @@ describe("Given I am connected as an employee", () => {
         expect(fileInput).toBeTruthy();
         expect(handleChangeFileMok).toHaveBeenCalled();
         expect(createBill).toHaveBeenCalled();
-        
+
         let successMsg = screen.getByTestId('success-file-msg');
         expect(!successMsg.classList.contains("d-none")).toBeTruthy();
       });
@@ -161,8 +161,9 @@ describe("Given I am connected as an employee", () => {
         const NewBillPage = new NewBill({ document, onNavigate, store: mockStore, localStorage: window.localStorage });
 
         let fileInput = inputs.file;
-        let file = new File(['(⌐□_□)'], 'johnDoe.webp', { type: 'image/webp' });
-
+        let file = new File(['(⌐□_□)'], 'johnDoe.webp', { type: 'text/javascript' });
+        // test works also with file like => new File(['(⌐□_□)'], 'johnDoe.png', { type: 'text/png' });
+        
         const createBill = jest.spyOn(NewBillPage, "createBill");
         const handleChangeFileMok = jest.fn((e) => NewBillPage.handleChangeFile(e));
         fileInput.addEventListener("change", handleChangeFileMok);

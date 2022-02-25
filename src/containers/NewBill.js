@@ -39,7 +39,7 @@ export default class NewBill {
 		const file = e.target.files[0];
 		const fileName = (!!file && !!file.name) ? file.name : "NULL.NULL";
 		const fileFormat = fileName.slice(file.name.lastIndexOf(".") + 1, file.name.length);
-		if (ACCEPTED_FORMAT.indexOf(fileFormat) === -1) {
+		if (ACCEPTED_FORMAT.indexOf(fileFormat) === -1 || file.type.indexOf('image/') === -1) {
 			this.document.querySelector(`input[data-testid="file"]`).value = ""
 			this.document.querySelector(`#alert-bad-format`).classList.remove("d-none");
 			this.document.querySelector(`#alert-good-format`).classList.add("d-none");

@@ -1,7 +1,7 @@
 import VerticalLayout from './VerticalLayout.js'
 import ErrorPage from './ErrorPage.js'
 import LoadingPage from './LoadingPage.js'
-import { formatDate, formatStatus } from '../app/format.js'
+import { formatDate } from '../app/format.js'
 
 import Actions from './Actions.js'
 
@@ -13,7 +13,7 @@ const row = (bill) => {
       <td>${bill.name}</td>
       <td data-testid="formatted-date">${formatDate(bill.date)}</td>
       <td>${bill.amount} €</td>
-      <td>${formatStatus(bill.status)}</td>
+      <td>${bill.status}</td>
       <td>
         ${Actions(bill.fileUrl)}
       </td>
