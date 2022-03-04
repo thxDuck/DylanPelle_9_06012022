@@ -1,15 +1,12 @@
 /**
  * @jest-environment jsdom
  */
-
 import { fireEvent, screen, waitFor } from "@testing-library/dom"
 import NewBillUI from "../views/NewBillUI.js"
 import NewBill from "../containers/NewBill.js"
 import { ROUTES } from "../constants/routes.js"
 import { localStorageMock } from "../__mocks__/localStorage.js"
 import mockStore from "../__mocks__/store"
-import { bills } from "../fixtures/bills"
-import router from "../app/Router"
 
 jest.mock("../app/store", () => mockStore)
 
@@ -151,7 +148,7 @@ describe("Given I am connected as an employee", () => {
         expect(fileInput).toBeTruthy();
         expect(handleChangeFileMok).toHaveBeenCalled();
         expect(createBill).toHaveBeenCalled();
-        
+
         let successMsg = screen.getByTestId('success-file-msg');
         expect(!successMsg.classList.contains("d-none")).toBeTruthy();
       });
@@ -161,7 +158,8 @@ describe("Given I am connected as an employee", () => {
         const NewBillPage = new NewBill({ document, onNavigate, store: mockStore, localStorage: window.localStorage });
 
         let fileInput = inputs.file;
-        let file = new File(['(⌐□_□)'], 'johnDoe.webp', { type: 'image/webp' });
+        let file = new File(['(⌐□_□)'], 'johnDoe.webp', { type: 'text/javascript' });
+        // /* test pass also with file like => */ file = new File(['(⌐□_□)'], 'johnDoe.png', { type: 'text/png' });
 
         const createBill = jest.spyOn(NewBillPage, "createBill");
         const handleChangeFileMok = jest.fn((e) => NewBillPage.handleChangeFile(e));
@@ -181,7 +179,7 @@ describe("Given I am connected as an employee", () => {
 
       test("Then I fill all required inputs", () => {
         console.error = jest.fn();
-
+        
         const NewBillPage = new NewBill({ document, onNavigate, store: mockStore, localStorage: window.localStorage });
         let form = screen.getByTestId('form-new-bill');
         let submitButton = screen.getByTestId('btn-submit-form');
@@ -192,7 +190,7 @@ describe("Given I am connected as an employee", () => {
         inputs.amount.value = 100;
         inputs.vat.value = 80;
         inputs.pct.value = 20;
-        inputs.commentary.value = "Test de Julien";
+        inputs.commentary.value = "Voyage vers gare Montparnasse";
 
         const sumbmitFn = jest.fn((e) => NewBillPage.handleSubmit(e));
         const spyUpdateBill = jest.spyOn(NewBillPage, 'updateBill');
@@ -202,6 +200,15 @@ describe("Given I am connected as an employee", () => {
 
         expect(sumbmitFn).toHaveBeenCalled();
         expect(spyUpdateBill).toHaveBeenCalled();
+      });
+
+      test('POST INTEGRATION', async () => {
+        const mockedApiFn = mockStore.bills();
+        const spyPost = jest.spyOn(mockedApiFn, "create");
+        const response = await mockedApiFn.create();
+
+        expect(spyPost).toHaveBeenCalledTimes(1);
+        expect(response.key).toBe("1234");
       });
 
     });
