@@ -1,4 +1,14 @@
 
+## Liens du scénario :
+
+1. [Description de la fonctionnalité](https://s3.eu-west-1.amazonaws.com/course.oc-static.com/projects/DA+JSR_P9/Billed+-+Description+des+fonctionnalite%CC%81s.pdf)
+2. [Back-end](https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-back)
+3. [Front-end de base](https://github.com/OpenClassrooms-Student-Center/Billed-app-FR-Front)
+4. [Parcours employé](https://course.oc-static.com/projects/DA+JSR_P9/Billed+-+Description+pratique+des+besoins+-.pdf)
+5. [Rapport de bug](https://www.notion.so/openclassrooms/a7a612fc166747e78d95aa38106a55ec?v=2a8d3553379c4366b6f66490ab8f0b90)(notion)
+
+
+
 ## L'architecture du projet :
 Ce projet, dit frontend, est connecté à un service API backend que vous devez aussi lancer en local.
 
